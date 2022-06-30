@@ -1,0 +1,8 @@
+{
+    "biome_size": 3,
+    "chunk_size": 5,
+    "block_size": 10,
+    "max_bioms": 3,
+    
+    "fps": 60
+}
