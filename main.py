@@ -44,7 +44,11 @@ def load_animation(parent_name: str, animation_name: str, animation_length: int,
 def load_image(image_directory: str) -> pygame.Surface:
 
     image = pygame.image.load(image_directory)
-    image = pygame.transform.scale(image, (image.get_width() * config_data['block_size'], image.get_height() * config_data['block_size'])).convert_alpha()
+
+    if not 'player' in image_directory:
+        image = pygame.transform.scale(image, (config_data['block_size'], config_data['block_size'] if not 'wall' in image_directory else config_data['block_size'] * 2.4)).convert_alpha()
+    else:
+        image = pygame.transform.scale(image, (config_data['block_size'] * 0.5, config_data['block_size'] * 1.2)).convert_alpha()
 
     return image
 
@@ -102,7 +106,9 @@ player_sprite = Sprite(
 
 player = Player((100, 100), player_sprite)
 player.set_sprites(images['humanoids']['player'])
+player.initialize_animations()
 
+player.play_move_animation()
 # ------- final setup ---------
 
 while True:
@@ -123,7 +129,7 @@ while True:
 
             distance = get_distance((player.rect.x, player.rect.y), (x_position, y_position))
 
-            if distance[0] < 200 and distance[1] < 200:
+            if distance[0] < player.render_distance_x and distance[1] < player.render_distance_y:
 
                 display.blit(block.sprite.image, (block.rect.x, block.rect.y))
 
@@ -134,6 +140,8 @@ while True:
                     display.blit(block.sub_sprite.image, (block.rect.x, block.rect.y))
 
             continue
+
+    display.blit(player(), (player.rect.x, player.rect.y))
 
     pygame.display.flip()
 
